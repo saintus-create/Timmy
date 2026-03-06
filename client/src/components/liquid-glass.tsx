@@ -80,13 +80,13 @@ export const LiquidSimulation = ({ imagePath = "", text }: { imagePath?: string,
             pressure += delta * pVel;
             pVel -= 0.005 * delta * pressure;
             pVel *= 1.0 - 0.002 * delta;
-            pressure *= 0.999;
+            pressure *= 0.9995; // Slightly reduced damping for larger ripples
 
             vec2 mouseUV = mouse / resolution;
             if(mouse.x > 0.0) {
                 float dist = distance(uv, mouseUV);
-                if(dist <= 0.02) {
-                    pressure += 2.0 * (1.0 - dist / 0.02);
+                if(dist <= 0.05) { // Increased radius for larger ripples (0.02 -> 0.05)
+                    pressure += 4.0 * (1.0 - dist / 0.05); // Increased intensity (2.0 -> 4.0)
                 }
             }
 
@@ -114,12 +114,12 @@ export const LiquidSimulation = ({ imagePath = "", text }: { imagePath?: string,
 
         void main() {
             vec4 data = texture2D(textureA, vUv);
-            vec2 distortion = 0.3 * data.zw;
+            vec2 distortion = 0.5 * data.zw; // Increased distortion for more visible ripples (0.3 -> 0.5)
             vec4 color = texture2D(textureB, vUv + distortion);
 
-            vec3 normal = normalize(vec3(-data.z * 2.0, 0.5, -data.w * 2.0));
+            vec3 normal = normalize(vec3(-data.z * 4.0, 0.5, -data.w * 4.0)); // Sharper normals for clearer ripples
             vec3 lightDir = normalize(vec3(-3.0, 10.0, 3.0));
-            float specular = pow(max(0.0, dot(normal, lightDir)), 60.0) * 1.5;
+            float specular = pow(max(0.0, dot(normal, lightDir)), 60.0) * 2.0; // Increased specular highlight
 
             gl_FragColor = color + vec4(specular);
         }

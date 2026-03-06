@@ -5,7 +5,7 @@ import { Persona } from "@/components/ai-elements/persona";
 import { Button } from "@/components/ui/button";
 
 function VoiceControl() {
-  const { connect, disconnect, status, isPlaying } = useVoice();
+  const { connect, disconnect, status, isPlaying, error } = useVoice();
   
   // Determine the Persona state based on Hume Voice status
   let personaState: "idle" | "listening" | "thinking" | "speaking" | "asleep" = "idle";
@@ -28,20 +28,32 @@ function VoiceControl() {
         />
       </div>
       
-      {status.value === "connected" ? (
-        <Button onClick={() => disconnect()} variant="destructive" size="lg" className="rounded-full shadow-lg">
-          Disconnect
-        </Button>
-      ) : (
-        <Button 
-          onClick={() => connect().catch(console.error)} 
-          disabled={status.value === "connecting"}
-          size="lg"
-          className="rounded-full shadow-lg bg-white text-black hover:bg-zinc-200"
-        >
-          {status.value === "connecting" ? "Connecting..." : "Start Voice Agent"}
-        </Button>
-      )}
+      <div className="flex flex-col items-center gap-4">
+        {status.value === "connected" ? (
+          <Button onClick={() => disconnect()} variant="destructive" size="lg" className="rounded-full shadow-lg">
+            Disconnect
+          </Button>
+        ) : (
+          <Button 
+            onClick={() => connect().catch((err) => console.error("Connect error:", err))} 
+            disabled={status.value === "connecting"}
+            size="lg"
+            className="rounded-full shadow-lg bg-white text-black hover:bg-zinc-200"
+          >
+            {status.value === "connecting" ? "Connecting..." : "Start Voice Agent"}
+          </Button>
+        )}
+
+        {error && (
+          <p className="text-red-500 text-sm max-w-xs bg-black/50 p-2 rounded">
+            Error: {error.message || "An unknown error occurred"}
+          </p>
+        )}
+        
+        <p className="text-zinc-500 text-xs">
+          Status: {status.value}
+        </p>
+      </div>
     </div>
   );
 }

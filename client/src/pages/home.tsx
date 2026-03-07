@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { LiquidSimulation } from "@/components/liquid-glass";
 import { Button } from "@/components/ui/button";
 
@@ -17,10 +18,17 @@ export default function Home() {
           </p>
         </div>
         
-        <div className="w-full max-w-md mx-auto">
-          <Button size="lg" className="rounded-full shadow-lg bg-white text-black hover:bg-zinc-200">
-            Get Started
-          </Button>
+        <div className="w-full max-w-md mx-auto flex gap-4">
+          <Link href="/chat">
+            <Button size="lg" className="flex-1 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 text-white" data-testid="button-start-chat">
+              Start Chatting
+            </Button>
+          </Link>
+          <Link href="/about">
+            <Button size="lg" variant="outline" className="flex-1 rounded-full shadow-lg" data-testid="button-learn-more">
+              Learn More
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

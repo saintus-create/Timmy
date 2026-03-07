@@ -10,6 +10,9 @@
       "cssVariables": true,
       "prefix": ""
     },
+    "registries": {
+      "fab-ui": "https://fab-ui.com/r/{name}.json"
+    },
     "aliases": {
       "components": "@/components",
       "utils": "@/lib/utils",

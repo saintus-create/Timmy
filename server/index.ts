@@ -7,13 +7,6 @@ import { createServer } from "http";
 import dotenv from "dotenv";
 dotenv.config();
 
-// sanity-check required Hume keys early so the server won't start in an invalid state
-if (!process.env.HUME_API_KEY || !process.env.HUME_SECRET_KEY) {
-  console.error(
-    "Missing Hume credentials. Please set HUME_API_KEY and HUME_SECRET_KEY in your environment or .env file."
-  );
-  process.exit(1);
-}
 
 const app = express();
 const httpServer = createServer(app);

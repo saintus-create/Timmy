@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 import { Persona } from "@/components/ai-elements/persona";
 import { Button } from "@/components/ui/button";
 
-function VoiceControl() {
+interface VoiceControlProps {
+  token: string;
+}
+
+function VoiceControl({ token }: VoiceControlProps) {
   const { connect, disconnect, status, isPlaying, error } = useVoice();
-  
+
   // Determine the Persona state based on Hume Voice status
   let personaState: "idle" | "listening" | "thinking" | "speaking" | "asleep" = "idle";
-  
+
   if (status.value === "connected") {
     if (isPlaying) {
       personaState = "speaking";
@@ -17,6 +21,15 @@ function VoiceControl() {
       personaState = "listening";
     }
   }
+
+  const handleConnect = () => {
+    // supply options required by the SDK (auth + configId etc.)
+    connect({
+      auth: { type: "accessToken", value: token },
+      configId: process.env.NEXT_PUBLIC_HUME_CONFIG_ID || "<YOUR_CONFIG_ID>",
+      // you can include other session settings here
+    }).catch((err) => console.error("Connect error:", err));
+  };
 
   return (
     <div className="flex flex-col items-center gap-8 pointer-events-auto">
@@ -35,7 +48,7 @@ function VoiceControl() {
           </Button>
         ) : (
           <Button 
-            onClick={() => connect().catch((err) => console.error("Connect error:", err))} 
+            onClick={handleConnect}
             disabled={status.value === "connecting"}
             size="lg"
             className="rounded-full shadow-lg bg-white text-black hover:bg-zinc-200"
@@ -69,7 +82,8 @@ function HumeApp() {
         if (data.token) {
           setToken(data.token);
         } else {
-          setError("No token received");
+          // server might send an error property
+          setError(data.error || "No token received");
         }
       })
       .catch((err) => {
@@ -83,10 +97,9 @@ function HumeApp() {
 
   return (
     <VoiceProvider 
-      auth={{ type: "accessToken", value: token }}
       onMessage={(message) => console.log("Hume message:", message)}
     >
-      <VoiceControl />
+      <VoiceControl token={token} />
     </VoiceProvider>
   );
 }

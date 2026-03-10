@@ -17,10 +17,5 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "components": [],
-  "registries": {
-    "@shadcn": {
-      "url": "https://ui.shadcn.com/r/{name}.json"
-    }
-  }
+  "components": []
 }
